@@ -1,4 +1,7 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
 
 /**
  *
@@ -6,8 +9,11 @@
  * @author        Danny Nunez
  * @copyright  Copyright (c) 2013 Danny Nunez
  */
-
 // ------------------------------------------------------------------------
+include APPPATH . 'third_party/phpass/Phpass.php';
+
+use Phpass\Hash;
+use Phpass\Hash\Adapter\Bcrypt;
 
 class Authentication extends MY_Controller {
 
@@ -17,51 +23,60 @@ class Authentication extends MY_Controller {
 
 //        $this->load->helper();
 //        $this->load->library();
-        $this->load->model(array('Auth_model'));
-        
+        $this->load->library(array('form_validation'));
+        $this->load->model(array('auth_model'));
     }
 
-    public function register($data, $groups) {
-        
-        //----------------------------------------------------------------------------------------------------------------------------------------------
-        //  check if email already exists - This should never be needed.The Form validation rules should catch this. 
-        //----------------------------------------------------------------------------------------------------------------------------------------------
-
-        if ($this->auth_model->emailExists($data['email'])) {
-            return FALSE;            
+    public function verifyLogin($data) {
+        $crypt = new Hash();
+        $model = new Auth_model();
+        if ($this->form_validation->valid_email($data['email']) === true && $model->emailExists($data['email'])) {
+            $account = $model->get_by('email', $data['email']);
+            if ($crypt->checkPassword($data['password'], $account->password)) {
+                return $account;
+            } else {
+                return false;
+            }
         }
+        return false;
+    }
 
-        //----------------------------------------------------------------------------------------------------------------------------------------------
-        //  Prepare data to be stored. 
-        //----------------------------------------------------------------------------------------------------------------------------------------------
+    public function logout($session) {
 
-        $data[''];
+        $model = new Auth_model();
+        // reset the following to null to prevent hacking attempts. These values are used when verifying a user is loged in. 
+        $data = array(
+            'last_ip' => null,
+            'sessionID' => null,
+            'last_login' => null
+        );
+        // update user record
+        $result = $model->update($session['user_data'], $data);
+        //return boolean
+        return $result;
+      
+    }
 
+    /**
+     * @Description - Verify the current cookie session data is of a person who is logged. 
+     * @todo - add in check to verify the ipaddress - Can do that since SVN is broken
+     * @return boolean
+     */
+    public function is_logged_in() {
 
-        if (true) {
-            return true;
+        $session = $this->session->all_userdata();
+        $model = new Auth_model();
+        if (isset($session['user_data'])) {
+            $userData = $model->get($session['user_data']);
+            if ($userData->last_login == $session['last_activity'] && $userData->sessionID == $session['session_id']) {
+                return true;
+            }
         } else {
             return false;
         }
-        
-        
-        
-        
     }
 
-    public function login() {
-        
-    }
-
-    public function logout() {
-        
-    }
-
-    public function verifyUserSession() {
-        
-    }
-
-    public function is_logged_in() {
+    public function reset_password($email = '', $code = '') {
         
     }
 
@@ -101,14 +116,6 @@ class Authentication extends MY_Controller {
         
     }
 
-    public function hash_password($pass, $iterations = 0) {
-        
-    }
-
-    public function check_password($password, $hash) {
-        
-    }
-
     protected function increase_login_attempts($login) {
         
     }
@@ -119,65 +126,6 @@ class Authentication extends MY_Controller {
 
     protected function num_login_attempts($login = NULL) {
         
-    }
-
-    //--------------------------------------------------------------------
-    // !AUTO-LOGIN
-    //--------------------------------------------------------------------
-
-    /**
-     * Attempts to log the user in based on an existing 'autologin' cookie.
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function autologin() {
-        
-    }
-
-    private function create_autologin($user_id, $old_token = NULL) {
-        
-    }
-
-    private function delete_autologin() {
-        
-    }
-
-    //--------------------------------------------------------------------
-
-    /**
-     * Creates the session information for the current user. Will also create an autologin cookie if required.
-     *
-     * @access private
-     *
-     * @param int $user_id          An int with the user's id
-     * @param string $username      The user's username
-     * @param string $password_hash The user's password hash. Used to create a new, unique user_token.
-     * @param string $email         The user's email address
-     * @param int    $role_id       The user's role_id
-     * @param bool   $remember      A boolean (TRUE/FALSE). Whether to keep the user logged in.
-     * @param string $old_token     User's db token to test against
-     * @param string $user_name     User's made name for displaying options
-     *
-     * @return bool TRUE/FALSE on success/failure.
-     */
-    private function setup_session($user_id, $username, $password_hash, $email, $role_id, $remember = FALSE, $old_token = NULL, $user_name = '') {
-        
-    }
-
-    /**
-     * Returns the identity to be used upon user registration.
-     *
-     * @access private
-     * @todo Decision to be made with this method.
-     *
-     * @return void
-     */
-    private function _identity_login() {
-        //Should I move indentity conditional code from setup_session() here?
-        //Or should conditional code be moved to auth->identity(),
-        //  and if Optional TRUE is passed, it would then determine wich identity to store in userdata?
     }
 
 }

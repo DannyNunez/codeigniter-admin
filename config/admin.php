@@ -1,7 +1,4 @@
 <?php
-/*
- * This is based of of Ion_auth from Ben Edmunds
- */
 
 /*
   | -------------------------------------------------------------------------
@@ -23,7 +20,8 @@ $config['user_extend_on_login'] = FALSE;                           // Extend the
 $config['track_login_attempts'] = FALSE;                              // Track the number of failed login attempts for each user or ip.
 $config['maximum_login_attempts'] = 3;                                // The maximum number of failed login attempts.
 $config['forgot_password_expiration'] = 0;                            // The number of seconds after which a forgot password request will expire. If set to 0, forgot password requests will not expire.
-$config['registration_status'] = true;                                           // true or false - Allow registration 
+$config['registration_status'] = true;                                        // true or false - Allow registration 
+$config['user_login'] = true;                                                    // true or false - Allow logins
 
 /*
   | -------------------------------------------------------------------------
@@ -32,6 +30,9 @@ $config['registration_status'] = true;                                          
  */
 
 $config['user_reg_error_message'] = '<div class="alert"><p>There was an error in proccessing your registration. Please try again.</p></div>'; 
+$config['user_login_error_message'] = '<div class="alert"><p>There was an error in proccessing your login. Please try again.</p></div>'; 
+
+
 
 /*
   | -------------------------------------------------------------------------
@@ -47,6 +48,32 @@ $config['password_tooltip'] = '<p>'
         . 'Lowercase letters minimum: 2<br>'
         . 'Numbers minimum: 2<br>'
         . '</p>';
+
 $config['birthday_tooltip'] =  '<p>You must be at least 18 years of age or older to use this service.'; 
 
+/*
+  | -------------------------------------------------------------------------
+  | Login Messages
+  | -------------------------------------------------------------------------
+ */
+
+$config['logout_message'] =  array('message' => '<p>You have succesfully logged out of your account.</p>'); 
+
+/*
+  | -------------------------------------------------------------------------
+  | Profile Messages
+  | -------------------------------------------------------------------------
+ */
+
+$config['profile_update_successfull'] =  array('message' => '<p>Your profile has been updated.</p>');
+$config['profile_update_unsuccessfull'] =  array('message' => '<p>Sorry we were unable to update your profile.</p>');
+
+/*
+  | -------------------------------------------------------------------------
+  | Permission Messages
+  | -------------------------------------------------------------------------
+ */
+
+$config['add_permission_successful'] =  array('message' => '<p>New permission succesfully added.</p>');
+$config['add_permission_error'] =  array('message' => '<p>Sorry we were unable to add the permission.Please try again.</p>');
 

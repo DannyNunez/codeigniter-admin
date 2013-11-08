@@ -1,4 +1,4 @@
-<h1>Site Name</h1>
+<h1>Welcome to the Falcon Community Website</h1>
 
 <?php
 if(isset($error_message)){
