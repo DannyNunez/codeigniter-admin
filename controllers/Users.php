@@ -33,8 +33,8 @@ use Phpass\Hash\Adapter\Bcrypt;
 
 class Users extends MY_Controller {
 
-    private $publickey = "6LeVJukSAAAAALueCB_4FjU4zmcBYyN0ejPN8IDz";
-    private $privatekey = "6LeVJukSAAAAAHPQzkYDrohwL73YAvbEBgHOQK4g";
+    private $publickey = "";
+    private $privatekey = "";
 
     function __construct() {
 
